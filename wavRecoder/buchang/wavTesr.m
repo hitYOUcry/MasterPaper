@@ -9,7 +9,7 @@ filename = 'TX3_4.wav';
 y = y(:,1);
 n = size(y,1);
 %% add noise
-%y =  awgn(y,35);
+y =  awgn(y,55);
 %% base zero detect
 for i = 1:n
     if abs(y(i)) > 10e-04
@@ -30,6 +30,7 @@ win_len = round( 20 / 1000 * fs);
 inc = round( 0.5 * win_len);
 w = hamming(win_len);
 s = enframe(y,win_len,inc);
+y = i_enframe(s,inc);
 frame_len = size(s,1);
 fft_res = zeros(frame_len,win_len/2 + 1);
 %% deal with the enframed data
@@ -38,7 +39,7 @@ s_new = zeros(frame_len,win_len);
 formantNum = 5;
 FR = zeros(frame_len,formantNum);
 BW =  zeros(frame_len,formantNum);
-delta_diff =0.4;
+delta_diff =.6;
 
 for j = 1:frame_len
     frame_data = s(j,:);
@@ -51,7 +52,7 @@ for j = 1:frame_len
           s_new(j,:) = frame_data;
           continue;
     end
-    
+ %{   
     %计算当前帧共振峰参数
     [fr,bw] = FrameFormant(frame_data ,formantNum,fs);
     FR(j,:) = fr;
@@ -90,32 +91,34 @@ for j = 1:frame_len
         end
         gain = gain + cos(delta_f / bw_i * pi);
         %}
-         a = diff_1(i-1);
+        a = diff_1(i-1);
         b = diff_1(i);
-        gain_add = 0;
+        gain_add = 1;
        if a*b < 0
            if a > 0
-               gain_add = delta_diff;
+               gain_add = 1/delta_diff;
            else
-                gain_add = -delta_diff;
+                gain_add = delta_diff;
+                %gain_add = 1;
            end
        end
         %共振峰剔除测试
          if f > (fr(1) - 0.5 * bw(1)) &&  f < (fr(1) + 0.5 * bw(1)) || f > (fr(2) - 0.5 * bw(2)) &&  f < (fr(2) + 0.5 * bw(2))...
                  || f > (fr(3) - 0.5 * bw(3)) &&  f < (fr(3) + 0.5 * bw(3)) || f > (fr(4) - 0.5 * bw(4)) &&  f < (fr(4) + 0.5 * bw(4))...
                  || f > (fr(5) - 0.5 * bw(5)) &&  f < (fr(5) + 0.5 * bw(5))
-             gain =1.4;
+             gain =1.3;
              %fprintf('%fHz \n',f);
          else
   %           delta_f = min(abs(fr - f));
    %          gain = sin(2*pi*delta_f/fs*2);
-             gain = 0.63;
+             gain = 1;
          end
-         gain = gain + gain_add;
+         gain = gain * gain_add;
         fft_data(i) = gain * fft_data(i);
         fft_data(win_len + 2 - i) =  conj(fft_data(i));
     end
-     s_new(j,:) = cal_amp(ifft(fft_data));
+    %}
+     s_new(j,:) = SCE(frame_data,1);
 end
 y_new = i_enframe(s_new,inc);
 

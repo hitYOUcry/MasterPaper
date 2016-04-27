@@ -23,7 +23,9 @@ diff_1 = diff(fft_data_amp,1);
 fft_data_en = zeros(N,1);
 midN = mid(N);
 
-delta_diff = 0.2;
+delta_diff = 0.6;
+
+
 for i = 2 : midN
         f = fs * i / N;
         a = diff_1(i-1);
@@ -40,7 +42,7 @@ for i = 2 : midN
          if f > (fr(1) - 0.5 * bw(1)) &&  f < (fr(1) + 0.5 * bw(1)) || f > (fr(2) - 0.5 * bw(2)) &&  f < (fr(2) + 0.5 * bw(2))...
                  || f > (fr(3) - 0.5 * bw(3)) &&  f < (fr(3) + 0.5 * bw(3)) || f > (fr(4) - 0.5 * bw(4)) &&  f < (fr(4) + 0.5 * bw(4))...
                  || f > (fr(5) - 0.5 * bw(5)) &&  f < (fr(5) + 0.5 * bw(5))
-             gain =1.3;
+             gain =1.2;
          else 
              gain =1;
          end
@@ -51,6 +53,8 @@ end
 fft_data_en_amp = abs(fft_data_en);
 y1 = 10 * log10(fft_data_amp);
 y2 = 10 * log10(fft_data_en_amp);
+
+
 figure;
 t = (1:midN)/N *fs;
 subplot(2,1,1)

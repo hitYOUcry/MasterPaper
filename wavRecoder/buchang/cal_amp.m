@@ -1,4 +1,5 @@
 function y = cal_amp(y)
+inf = 10e-10;
 n = length(y);
 flag = 0;
 if(size(y,1) == 1)
@@ -7,7 +8,8 @@ if(size(y,1) == 1)
 end
 for i = 1 : n
      temp = y (i,1);
-    if(imag(temp) == 0)
+    if(abs(imag(temp))< inf)
+        y (i,1) = real(temp);
         continue;
     end
     id = -1;
