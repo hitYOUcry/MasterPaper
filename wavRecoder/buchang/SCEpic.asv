@@ -1,0 +1,19 @@
+clc;clear all;close all
+%% ∂¡»Î”Ô“Ù
+load('frameData.mat');
+data = wavFrame;
+N = length(wavFrame);
+
+%% ∆◊‘ˆ«ø
+data_new  = SCE(data,0.6);
+spec =  logSpec(data);
+spec_new = logSpec(data_new);
+
+figure;
+t = (1:midN)/N *fs;
+subplot(2,1,1)
+plot(t,spec(1:midN));
+subplot(2,1,2);
+plot(t,spec_new(1:midN));
+figure;
+plot(t,spec(1:midN),t,spec_new(1:midN),'r--');

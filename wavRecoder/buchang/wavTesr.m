@@ -9,7 +9,7 @@ filename = 'TX3_4.wav';
 y = y(:,1);
 n = size(y,1);
 %% add noise
-y =  awgn(y,55);
+%y =  awgn(y,55);
 %% base zero detect
 for i = 1:n
     if abs(y(i)) > 10e-04
