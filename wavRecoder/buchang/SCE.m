@@ -10,7 +10,7 @@ ylabel('amplitude');
 %}
 inf_th = 10e-10;
 %% fft data 
-fft_data = fft(wavFrame);
+fft_data = fft(wavFrame,256);
 fft_data_amp = abs(fft_data);
 fft_data_amp(find(fft_data_amp<inf_th)) = inf_th;
 
