@@ -118,7 +118,7 @@ for j = 1:frame_len
         fft_data(win_len + 2 - i) =  conj(fft_data(i));
     end
     %}
-     s_new(j,:) = SCE(frame_data,1);
+     s_new(j,:) = SCE(frame_data,1,fs);
 end
 y_new = i_enframe(s_new,inc);
 

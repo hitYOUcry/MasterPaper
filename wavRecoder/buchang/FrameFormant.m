@@ -6,10 +6,10 @@ if FormantNum~=1&FormantNum~=2&FormantNum~=3&FormantNum~=4&FormantNum~=5&Formant
     FormantNum=1;
 end
 
-a=lpc(x,50);
-% ffta=abs(fft(a));
+a=lpc(x,14);
+ ffta=abs(fft(a));
 % 
-% FR=ffta;
+FR=ffta;
 
 rts = roots(a);
 rts = rts(imag(rts)>=0);

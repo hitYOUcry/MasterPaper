@@ -1,0 +1,19 @@
+filename = 'TX3_4.wav';
+%filename = 'test_1.wav';
+%filename = 'test.wav';
+[y ,fs] = audioread(filename);
+wlen = 20 /1000* fs;
+inc = 0.5 * wlen;
+s = enframe(y,wlen,inc);
+for i = 1 : size(s,1)
+    
+end
+figure;
+subplot(2,1,1);
+plot(y)
+time =1.05;
+x = y(fs * time:(fs * time+255));
+subplot(2,1,2);
+plot(x)
+wavFrame = x;
+%save('frameData.mat','fs','wavFrame');

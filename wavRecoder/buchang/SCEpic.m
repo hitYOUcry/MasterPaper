@@ -6,7 +6,7 @@ N = length(wavFrame);
 midN = mid(N);
 
 %% Æ×ÔöÇ¿
-data_new  = SCE(data,0.6);
+data_new  = SCE(data,0.6,fs);
 spec =  logSpec(data);
 spec_new = logSpec(data_new);
 
