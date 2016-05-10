@@ -1,15 +1,16 @@
-function [FR BW]=FrameFormant(x,FormantNum,fs)
+function [FR BW]=FrameFormant(x,fs)
 %x: input
 %FormantNum
 %y: output, frequence
-if FormantNum~=1&FormantNum~=2&FormantNum~=3&FormantNum~=4&FormantNum~=5&FormantNum~=6&FormantNum~=7&FormantNum~=8
-    FormantNum=1;
-end
 
-a=lpc(x,14);
- ffta=abs(fft(a));
+p = 24;
+
+a=lpc(x,p);
+N = length(x);
+
+%ffta=abs(fft(a));
 % 
-FR=ffta;
+%FR=ffta;
 
 rts = roots(a);
 rts = rts(imag(rts)>=0);
@@ -51,11 +52,22 @@ rts=rtsnew;
 [frqs,indices] = sort(angz.*(fs/(2*pi)));
 bw = -1/2*(fs/(2*pi))*log(abs(rts(indices)));
 
-FR=frqs(1:FormantNum);
-BW=bw(1:FormantNum);
 
+
+b = [1 zeros(1,p)];
+[h,~] = freqz(b,a,2*N);
+h =10 * log10(abs(h));
+[indexs , ~] = findpeaks(h);
+frs = indexs/length(h) * fs /2;
+j = 1;
+for k = 1:3
+    [~,min_ind] = min(abs(frqs - frs(k)));
+    FR(k) = frs(k);
+    BW(k) = bw(min_ind);
+end
 
 end
+
 % nn = 1;
 % for kk = 1:length(frqs)
 %     if (frqs(kk) > 90 && bw(kk) <400)

@@ -83,9 +83,9 @@ if diff_y(1) > 0
 end
 
 %% get formants 
-formantNum = 5;
-[FR BW] = FrameFormant(wavFrame,formantNum,fs);
-BW(2) = 5 * BW(2);
+formantNum = 3;
+[FR BW] = FrameFormant(wavFrame,fs);
+%BW= 5 * BW;
 %% cal new mins && maxs
 p = 1;
 for m = 1:length(maxIndex)
