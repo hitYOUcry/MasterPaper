@@ -2,9 +2,10 @@ clc
 clear all;
 close all;
 %% read in wav file
-filename = 'TX3_4.wav';
 %filename = 'test_1.wav';
 %filename = 'test.wav';
+filename = 'TX5_4.wav';
+filename = 'sa2.wav';
 [y ,fs] = audioread(filename);
 y = y(:,1);
 n = size(y,1);

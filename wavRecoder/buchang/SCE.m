@@ -18,7 +18,7 @@ fft_data_amp = abs(fft_data);
 fft_data_amp(find(fft_data_amp<inf_th)) = inf_th;
 
 midN = mid(N);
-y = 10 * log10(fft_data_amp(1:midN));
+y = 20 * log10(fft_data_amp(1:midN));
 y_en = zeros(midN,1);
 
 %% mins && maxs
@@ -83,8 +83,8 @@ if diff_y(1) > 0
 end
 
 %% get formants 
-formantNum = 3;
 [FR BW] = FrameFormant(wavFrame,fs);
+formantNum = length(FR);
 %BW= 5 * BW;
 %% cal new mins && maxs
 p = 1;
@@ -111,7 +111,9 @@ maxIndex(tempM) = [];
 minIndex(tempN) = [];
 minVal_new(tempN) = [];
 %}
-y(maxIndex(tempM)) = y(maxIndex(tempM)) + 2;
+if p ~= 1
+    y(maxIndex(tempM)) =  y(maxIndex(tempM)) + 3;
+end
 %% cal new specs 
 for k= 2 : midN
     index_max = maxIndex(i);
@@ -138,8 +140,12 @@ else
     end
 end
 
+%% 
+new_fft_amp = power(10,y_en./20);
 
-new_fft_amp = power(10,y_en./10);
+new_fft_amp = SPLCompen(fs,new_fft_amp);
+%new_fft_amp = SPLCompen(fs,fft_data_amp);
+
 new_fft = new_fft_amp.*exp(1i*angle(fft_data));
 test = ifft(new_fft);
 new_wav = cal_amp(ifft(new_fft));
