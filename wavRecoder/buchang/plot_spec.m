@@ -1,8 +1,12 @@
-function plot_spec(y, win_len, fs)
+function plot_spec(y, win_len, fs,a,b)
 [s, f] = specgram(y, win_len, fs);
-img = 10 * log10(abs(s) + eps);
+%[s ,f] = spectrogram(y,hamming(win_len),0.5 * win_len,win_len,fs);
+img = 20 * log10(abs(s));
 t=(1:length(y))/fs;
 imagesc(t,f,img);
  axis xy; 
  colormap(jet)
- caxis([-40 10])
+ if nargin == 5
+     caxis([a, b])
+ end
+ %

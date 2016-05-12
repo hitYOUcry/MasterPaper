@@ -27,7 +27,7 @@ y = y(i:j);
 n = size(y,1);
 
 %% enframe
-win_len = round( 20 / 1000 * fs);
+win_len =20 * fs / 1000;
 inc = round( 0.5 * win_len);
 w = hamming(win_len);
 s = enframe(y,win_len,inc);
@@ -119,7 +119,8 @@ for j = 1:frame_len
         fft_data(win_len + 2 - i) =  conj(fft_data(i));
     end
     %}
-     s_new(j,:) = SCE(frame_data,1,fs);
+    
+     s_new(j,:)= SCE(frame_data,1,fs);
 end
 y_new = i_enframe(s_new,inc);
 
@@ -127,18 +128,49 @@ fft_res_avg = sum(fft_res)/frame_len;
 fft_res_avg = (fft_res_avg - min(fft_res_avg))./(max(fft_res_avg) - min(fft_res_avg));
 
 x = (1:(win_len/2+1))./(win_len/2+1).*fs/2;
+
+
 figure;
 plot(x,fft_res_avg);
-figure;
-subplot(2,2,1)
-plot(y);
-subplot(2,2,2)
-plot_spec(y,win_len,fs);
 
-subplot(2,2,3)
-plot(y_new);
-subplot(2,2,4)
-plot_spec(y_new,win_len,fs);
+figure;
+t = (1:length(y))/fs;
+subplot(2,1,1)
+plot(t,y);
+title('原始语音');
+xlabel('时间')
+ylabel('幅度')
+subplot(2,1,2)
+plot(t,y_new);
+title('算法输出语音');
+xlabel('时间')
+ylabel('幅度')
+
+%{
+figure;
+subplot(2,1,1)
+plotSpec2(y,win_len,fs);
+title('原始语谱');
+xlabel('时间 / s')
+ylabel('频率 / Hz')
+subplot(2,1,2)
+plotSpec2(y_new,win_len,fs);
+title('算法输出语谱');
+xlabel('时间 / s')
+ylabel('频率 / Hz')
+%}
+
+figure;
+subplot(2,1,1)
+plot_spec(y,win_len,fs,-70,15);
+title('原始语谱');
+xlabel('时间 / s')
+ylabel('频率 / Hz')
+subplot(2,1,2)
+plot_spec(y_new,win_len,fs,-70,15);
+title('算法输出语谱');
+xlabel('时间 / s')
+ylabel('频率 / Hz')
 
 %{
 fprintf('Press any key to play the first wav...\n');

@@ -1,4 +1,5 @@
-function new_wav = SCE(wavFrame,factor,fs)
+function [new_wav] = SCE(wavFrame,factor,fs)
+pa = 1;
 if size(wavFrame,2) > size(wavFrame,1)
     wavFrame = wavFrame';
 end
@@ -18,9 +19,30 @@ fft_data_amp = abs(fft_data);
 fft_data_amp(find(fft_data_amp<inf_th)) = inf_th;
 
 midN = mid(N);
-y = 20 * log10(fft_data_amp(1:midN));
-y_en = zeros(midN,1);
+y = 20 * log10(fft_data_amp(1:midN)./pa);
+y_en = y;
 
+%% get formants && enhence
+[FR BW] = FrameFormant(wavFrame,fs);
+formantNum = length(FR);
+if formantNum > 3
+    formantNum = 3;
+end
+p = 1;
+for i = 1 : midN
+     f = fs * i / N;
+
+    for k = 1:formantNum
+        if abs(f - FR(k)) < BW(k)
+           tempM(p) = i;
+           p = p + 1;
+            break;
+        end
+    end
+end
+if p ~= 1
+    y(tempM) =  y(tempM) +10;
+end
 %% mins && maxs
 diff_y = diff(y,1);
 [maxIndex,maxVal] = findpeaks(y);
@@ -82,38 +104,16 @@ if diff_y(1) > 0
     n = 2;
 end
 
-%% get formants 
-[FR BW] = FrameFormant(wavFrame,fs);
-formantNum = length(FR);
 %BW= 5 * BW;
 %% cal new mins && maxs
-p = 1;
 for m = 1:length(maxIndex)
     if n > length(minVal) || m >length(maxIndex)
         break;
     end
-    f = fs * maxIndex(m) / N;
-
-    for k = 1:formantNum
-        if abs(f - FR(k)) < BW(k)
-           tempM(p) = m;
-           tempN(p) = n;
-           p = p + 1;
-            break;
-        end
-    end
-
     minVal_new(n) = maxVal(m) - (1 + sc_f) * (maxVal(m) - minVal(n));
     n = n + 1;
 end
-%{
-maxIndex(tempM) = [];
-minIndex(tempN) = [];
-minVal_new(tempN) = [];
-%}
-if p ~= 1
-    y(maxIndex(tempM)) =  y(maxIndex(tempM)) + 3;
-end
+
 %% cal new specs 
 for k= 2 : midN
     index_max = maxIndex(i);
@@ -141,13 +141,14 @@ else
 end
 
 %% 
-new_fft_amp = power(10,y_en./20);
 
+new_fft_amp = pa * power(10,y_en./20);
+
+%spec_t = 20 * log10(abs(fft_data_amp(1:midN)));
 new_fft_amp = SPLCompen(fs,new_fft_amp);
 %new_fft_amp = SPLCompen(fs,fft_data_amp);
 
 new_fft = new_fft_amp.*exp(1i*angle(fft_data));
-test = ifft(new_fft);
 new_wav = cal_amp(ifft(new_fft));
 
 %{

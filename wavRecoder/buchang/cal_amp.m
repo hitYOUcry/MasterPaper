@@ -1,5 +1,5 @@
 function y = cal_amp(y)
-inf = 10e-10;
+inf = 1e-15;
 n = length(y);
 flag = 0;
 if(size(y,1) == 1)
