@@ -42,7 +42,7 @@ frame_num = size(s,1);
 %midN = mid(N);
 for i = 1: frame_num
     x =  s(i,:);
-    s_new(i,:) = comAndTen(x,2000,3000,2000,4000,fs);
+    s_new(i,:) = comAndTen(x,1500,3000,1000,3500,fs);
     spec = 20 * log(inf + abs(fft(x)));
     Spe(i,:) = spec(1:midN);
     spec = 20 * log(inf + abs(fft(s_new(i,:))));
@@ -135,16 +135,15 @@ subplot(1,2,1)
 imshow(Spe')
  axis xy; 
 %}
-image((0:frame_num) * inc / fs,(0:midN)/N * fs,Spe')
+image((0:frame_num) * inc / fs,(0:win_len)/N * fs,Spe')
 axis xy
 colormap(jet);
 
 
-
 subplot(1,2,2)
-image((0:frame_num) * inc / fs,(0:midN)/N * fs,Spe_new')
+image((0:frame_num) * inc / fs,(0:win_len)/N * fs,Spe')
  axis xy; 
-colormap(jet);
+colormap(jet);caxis([-50, 20])
 
 %{
 figure;
