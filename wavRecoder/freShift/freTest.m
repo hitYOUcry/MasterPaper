@@ -3,7 +3,7 @@ clear all;
 close all;
 inf = 1E-10;
 %% read wav file
-filename = 'TX5_4.wav';
+filename = 'sa1.wav';
 [y ,fs] = audioread(filename);
 y = y(:,1);
 n = size(y,1);
@@ -42,7 +42,7 @@ frame_num = size(s,1);
 %midN = mid(N);
 for i = 1: frame_num
     x =  s(i,:);
-    s_new(i,:) = comAndTen(x,2000,3000,2000,4000,fs);
+    s_new(i,:) = comAndTen(x,6000,8000,6000,8000,8000,fs);
     spec = 20 * log(inf + abs(fft(x)));
     Spe(i,:) = spec(1:midN);
     spec = 20 * log(inf + abs(fft(s_new(i,:))));
@@ -129,36 +129,37 @@ end
 y_new = i_enframe(s_new,inc);
 
 
+%{
 figure;
 subplot(1,2,1)
-%{
+
 imshow(Spe')
  axis xy; 
-%}
+
 image((0:frame_num) * inc / fs,(0:midN)/N * fs,Spe')
 axis xy
-colormap(jet);
-
-
-
+%colormap(jet);
 subplot(1,2,2)
 image((0:frame_num) * inc / fs,(0:midN)/N * fs,Spe_new')
  axis xy; 
 colormap(jet);
+%}
 
-%{
+
 figure;
 subplot(1,2,1)
-plot_spec(y,win_len,fs,-60,15);
+%plot_spec(y,win_len,fs,-60,15);
+plotSpec2(y,win_len,fs);
 title('原始语谱');
 xlabel('时间 / s')
 ylabel('频率 / Hz')
 subplot(1,2,2)
-plot_spec(y_new,win_len,fs,-50,15);
+%plot_spec(y_new,win_len,fs,-50,15);
+plotSpec2(y_new,win_len,fs);
 title('算法输出语谱');
 xlabel('时间 / s')
 ylabel('频率 / Hz')
-%}
+
 
 %{
 fprintf('Press any key to play the first wav...\n');

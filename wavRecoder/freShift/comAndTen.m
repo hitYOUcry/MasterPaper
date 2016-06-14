@@ -1,12 +1,17 @@
-function y = comAndTen(x,fa,fb,fc,fd,fs)
+function y = comAndTen(x,fa,fb,f_cut,fc,fd,fs)
 N = length(x);
 X = fft(x);
 X_amp = abs(X);
 X_angle = angle(X);
 midN = mid(N);
 delta_f = fs / 2 / (midN - 1);
+X_amp_new = zeros(1,midN);
+X_angle_new = zeros(1,midN);
 for i = 1:midN
     f = (i - 1) * delta_f;
+    if f > f_cut
+        continue;
+    end
     f_o =  getF(fa,fb,fc,fd,fs,f);
     
     index = floor(f_o /delta_f) + 1;
